@@ -51,7 +51,7 @@ const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(error => {
 	throw error;
 });
 
-const plugin = () => {
+const plugin = ({enable = true} = {}) => {
 	const sourcemaps = [];
 	const pathMap = {};
 
@@ -74,7 +74,13 @@ const plugin = () => {
 		}
 
 		const oldPath = file.path;
-		transformFilename(file);
+        if (enable !== false) {
+            transformFilename(file);
+        }
+        else {
+            file.revOrigPath = file.path;
+            file.revOrigBase = file.base;
+        }
 		pathMap[oldPath] = file.revHash;
 
 		cb(null, file);
